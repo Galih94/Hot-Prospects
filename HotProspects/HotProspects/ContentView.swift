@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selection: String?
+    @State private var selection = Set<String>()
     var users: [String] = ["Tohru", "Yuki", "Kyo", "Momiji"]
     var body: some View {
         VStack {
-            if let selection {
-                Text("you selected \(selection)")
+            if !selection.isEmpty {
+                Text("you selected \(selection.formatted())")
             }
             List(users, id: \.self, selection: $selection) { user in
                 Text(user)
             }
+            EditButton()
         }
     }
 }
