@@ -16,13 +16,13 @@ struct ContentView: View {
             Text("Change Color")
                 .padding()
                 .contextMenu{
-                    Button("Red", systemImage: "checkmark.circle.fill") {
+                    Button("Red", systemImage: backgroundColor == .red ? "checkmark.circle.fill" : "") {
                         backgroundColor = Color.red
                     }
-                    Button("Green") {
+                    Button("Green", systemImage: backgroundColor == .green ? "checkmark.circle.fill" : "") {
                         backgroundColor = Color.green
                     }
-                    Button("Blue") {
+                    Button("Blue", systemImage: backgroundColor == .blue ? "checkmark.circle.fill" : "") {
                         backgroundColor = Color.blue
                     }
                 }
