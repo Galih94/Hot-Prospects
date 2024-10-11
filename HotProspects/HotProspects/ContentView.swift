@@ -27,10 +27,11 @@ struct ContentView: View {
                 """
         }
         let result = await fetchTask.result
-        do {
-            output = try result.get()
-        } catch {
-            output = "error -- \(error.localizedDescription)"
+        switch result {
+        case .success(let success):
+            output = success
+        case .failure(let failure):
+            output = "error -- \(failure.localizedDescription)"
         }
     }
 }
