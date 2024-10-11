@@ -16,7 +16,7 @@ struct ContentView: View {
             Text("Change Color")
                 .padding()
                 .contextMenu{
-                    Button("Red") {
+                    Button("Red", systemImage: "checkmark.circle.fill") {
                         backgroundColor = Color.red
                     }
                     Button("Green") {
