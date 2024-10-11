@@ -7,8 +7,26 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var backgroundColor = Color.red
     var body: some View {
-        Text("Hello world")
+        VStack {
+            Text("Hello world")
+                .padding()
+                .background(backgroundColor)
+            Text("Change Color")
+                .padding()
+                .contextMenu{
+                    Button("Red") {
+                        backgroundColor = Color.red
+                    }
+                    Button("Green") {
+                        backgroundColor = Color.green
+                    }
+                    Button("Blue") {
+                        backgroundColor = Color.blue
+                    }
+                }
+        }
     }
 }
 
