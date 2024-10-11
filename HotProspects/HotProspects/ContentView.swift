@@ -17,16 +17,20 @@ struct ContentView: View {
     }
     
     func fetchReadings() async {
-        do {
+        let fetchTask = Task {
             let url = URL(string: "https://hws.dev/readings.json")!
             let (data, _) = try await URLSession.shared.data(from: url)
             let readings = try JSONDecoder().decode([Double].self, from: data)
-            output = """
+            return """
                 Found \(readings.count) count
                 \(readings)
                 """
+        }
+        let result = await fetchTask.result
+        do {
+            output = try result.get()
         } catch {
-            print("error -- \(error.localizedDescription)")
+            output = "error -- \(error.localizedDescription)"
         }
     }
 }
