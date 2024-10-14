@@ -14,6 +14,9 @@ struct ContentView: View {
                     Button("Delete", systemImage: "minus.circle", role: .destructive) {
                         print("cta delete")
                     }
+                    Button("Cancel", systemImage: "chevron.left", role: .cancel){
+                        print("cta back")
+                    }
                 }
                 .swipeActions(edge: .leading) {
                     Button("Pin", systemImage: "pin") {
