@@ -8,7 +8,14 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello world")
+        List {
+            Text("Taylor Swift")
+                .swipeActions {
+                    Button("Send message", systemImage: "message") {
+                        print("cta tapped")
+                    }
+                }
+        }
     }
 }
 
