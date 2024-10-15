@@ -7,12 +7,30 @@
 
 import SwiftUI
 
+enum FilterType {
+    case none, contacted, uncontacted
+}
+
 struct ProspectsView: View {
+    let filter: FilterType
+    var title: String {
+        switch filter {
+        case .none:
+            "Everyone"
+        case .contacted:
+            "Contacted People"
+        case .uncontacted:
+            "Uncontacted People"
+        }
+    }
     var body: some View {
-        Text("Prospect View")
+        NavigationStack {
+            Text("ProspectsView")
+                .navigationTitle(title)
+        }
     }
 }
 
 #Preview {
-    ProspectsView()
+    ProspectsView(filter: .none)
 }
