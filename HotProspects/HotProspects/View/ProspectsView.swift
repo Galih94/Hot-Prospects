@@ -15,6 +15,7 @@ enum FilterType {
 
 struct ProspectsView: View {
     @Query(sort: \Prospect.name) var prospects: [Prospect]
+    @State private var selectedProspects = Set<Prospect>()
     @State private var isShowingScanner = false
     @Environment(\.modelContext) var modelContext
     let filter: FilterType
@@ -41,7 +42,7 @@ struct ProspectsView: View {
     
     var body: some View {
         NavigationStack {
-            List(prospects) { prospect in
+            List(prospects, selection: $selectedProspects) { prospect in
                 VStack(alignment: .leading) {
                     Text(prospect.name)
                         .font(.headline)
@@ -64,12 +65,25 @@ struct ProspectsView: View {
                         .tint(.green)
                     }
                 }
+                .tag(prospect)
                 
             }
             .navigationTitle(title)
             .toolbar {
-                Button("Scan", systemImage: "qrcode.viewfinder") {
-                    isShowingScanner = true
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Scan", systemImage: "qrcode.viewfinder") {
+                        isShowingScanner = true
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+                if selectedProspects.isEmpty == false {
+                    ToolbarItem(placement: .bottomBar) {
+                        Button("Delete Selected") {
+                            delete()
+                        }
+                    }
                 }
             }
             .sheet(isPresented: $isShowingScanner) {
@@ -89,6 +103,12 @@ struct ProspectsView: View {
             modelContext.insert(person)
         case .failure(let failure):
             print("error -- \(failure.localizedDescription)")
+        }
+    }
+    
+    func delete() {
+        for prospect in selectedProspects {
+            modelContext.delete(prospect)
         }
     }
 }
