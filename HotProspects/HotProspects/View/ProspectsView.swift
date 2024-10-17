@@ -5,6 +5,7 @@
 //  Created by Galih Samudra on 15/10/24.
 //
 
+import CodeScanner
 import SwiftData
 import SwiftUI
 
@@ -14,6 +15,7 @@ enum FilterType {
 
 struct ProspectsView: View {
     @Query(sort: \Prospect.name) var prospects: [Prospect]
+    @State private var isShowingScanner = false
     @Environment(\.modelContext) var modelContext
     let filter: FilterType
     var title: String {
@@ -51,10 +53,26 @@ struct ProspectsView: View {
             .navigationTitle(title)
             .toolbar {
                 Button("Scan", systemImage: "qrcode.viewfinder") {
-                    let prospect = Prospect(name: "Galih Samodra", emailAddress: "galih.samodra@email.com", isContacted: false)
-                    modelContext.insert(prospect)
+                    isShowingScanner = true
                 }
             }
+            .sheet(isPresented: $isShowingScanner) {
+                CodeScannerView(codeTypes: [.qr], simulatedData: "Galih1 Samodra\ngalih.samodra@email.com", completion: handleScan`(result:)`)
+            }
+        }
+    }
+    
+    func handleScan(result: Result<ScanResult, ScanError>) {
+        isShowingScanner = false
+        switch result {
+        case .success(let success):
+            let details = success.string.components(separatedBy: "\n")
+            guard details.count == 2 else { return }
+            let person = Prospect(name: details[0], emailAddress: details[1], isContacted: false)
+            
+            modelContext.insert(person)
+        case .failure(let failure):
+            print("error -- \(failure.localizedDescription)")
         }
     }
 }
