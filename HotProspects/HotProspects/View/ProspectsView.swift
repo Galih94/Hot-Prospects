@@ -15,11 +15,23 @@ enum FilterType {
 }
 
 struct ProspectsView: View {
-    @Query(sort: \Prospect.name) var prospects: [Prospect]
+    @Query() var prospects: [Prospect]
     @State private var selectedProspects = Set<Prospect>()
     @State private var isShowingScanner = false
     @Environment(\.modelContext) var modelContext
+    @State private var isSorted: Bool = false
     let filter: FilterType
+    var sortedProspects: [Prospect] {
+        if isSorted {
+            let res = prospects.sorted {
+                $0.name < $1.name
+            }
+            return res
+        } else {
+            let res = Array(prospects.reversed())
+            return res
+        }
+    }
     var title: String {
         switch filter {
         case .none:
@@ -37,13 +49,13 @@ struct ProspectsView: View {
             let showContactedOnly: Bool = filter == .contacted
             _prospects = Query(filter: #Predicate {
                 $0.isContacted == showContactedOnly
-            }, sort: [SortDescriptor(\Prospect.name)])
+            })
         }
     }
     
     var body: some View {
         NavigationStack {
-            List(prospects, selection: $selectedProspects) { prospect in
+            List(sortedProspects, selection: $selectedProspects) { prospect in
                 HStack {
                     NavigationLink {
                         EditProspectView(prospect: prospect)
@@ -94,6 +106,12 @@ struct ProspectsView: View {
                     Button("Scan", systemImage: "qrcode.viewfinder") {
                         isShowingScanner = true
                     }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Sort", systemImage: "arrow.up.arrow.down") {
+                        isSorted.toggle()
+                    }
+                    .tint(isSorted ? .green : .black)
                 }
                 ToolbarItem(placement: .topBarLeading) {
                     EditButton()
